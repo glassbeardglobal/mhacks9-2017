@@ -4,6 +4,7 @@ var server = require('../app');
 var should = chai.should();
 
 var market = require('../apis/market.js');
+var cap1 = require('../apis/capital_one.js');
 
 chai.use(chaiHttp);
 
@@ -16,6 +17,15 @@ describe('Market API Functions', function() {
       data.should.be.a('array');
       data[0].should.be.a('object');
       data[0].Symbol.should.equal('NVDA');
+      done();
+    });
+  });
+
+  it('should search unlisted companies', function(done) {
+    this.timeout(5000);
+    market.lookup('Dunkin', function(err, data) {
+      console.log(data);
+
       done();
     });
   });
@@ -44,6 +54,18 @@ describe('Market API Functions', function() {
     market.intradayChart('NVDA', function(err, data) {
       data.should.be.a('object');
       data.should.have.property('Time Series (15min)');
+
+      done();
+    });
+  });
+});
+
+describe('Capital One API Functions', function(done) {
+  var fn = 'Hick' + ~~(1000*Math.random());
+  var ln = 'Norcher' + ~~(1000*Math.random());
+  it('should create a user', function(done) {
+    cap1.createAccount(fn, ln, function(err, data) {
+      console.log(data);
 
       done();
     });

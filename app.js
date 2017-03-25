@@ -15,6 +15,7 @@ mongoose.connect(process.env.MONGO_CONNECTION_STRING, function(err) {
 });
 
 var routes = require('./routes/index');
+var api = require('./routes/api');
 
 var app = express();
 
@@ -27,6 +28,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
+app.use('/api', api);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -43,6 +45,7 @@ if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     res.json({
+      success: false,
       message: err.message,
       error: err
     });
@@ -54,6 +57,7 @@ if (app.get('env') === 'development') {
 app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.json({
+    success: false,
     message: err.message,
     error: {}
   });
