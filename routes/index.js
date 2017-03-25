@@ -27,13 +27,14 @@ router.get('/', function(req, res, next) {
 	// 		res.status(404).send();
 	// 	}
 	// });
-	cap_one.makePurchase('56c8f105061b2d440baf43ed', 9.63, function(err, data) {
-		if(!err) {
-			res.json(data);
-		} else {
-			res.status(404).send();
-		}
-	});
+	// cap_one.makePurchase('56c8f105061b2d440baf43ed', 9.63, function(err, data) {
+	// 	if(!err) {
+	// 		res.json(data);
+	// 	} else {
+	// 		res.status(404).send();
+	// 	}
+	// });
+	res.json({data: "hi"});
 });
 
 
