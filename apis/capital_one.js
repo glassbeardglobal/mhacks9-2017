@@ -3,7 +3,9 @@
 const API_KEY = '65be1ee16b2fbd6faade515551491370';
 const BASE_URL = 'http://api.reimaginebanking.com';
 const CARD_TYPE = ['Credit Card', 'Savings', 'Checking'];
+const MERCHANT_ID = '58d632301756fc834d9064e9';
 var request = require('request');
+
 
 exports.getAllAccountInfo = function(cb) {
 /* NOTE: RETURNS ARRAY OF OBJECTS
@@ -24,6 +26,7 @@ exports.getAllAccountInfo = function(cb) {
         cb(JSON.parse(err), JSON.parse(body));
     });
 }
+
 
 exports.getAllCustomers = function(cb) {
 /* NOTE: RETURNS ARRAY OF OBJECTS
@@ -48,6 +51,7 @@ exports.getAllCustomers = function(cb) {
         cb(JSON.parse(err), JSON.parse(body));
     })
 }
+
 
 exports.createAccount = function(first_name, last_name, cb) {
 /*
@@ -99,3 +103,33 @@ exports.createAccount = function(first_name, last_name, cb) {
     });
 }
 
+
+exports.makePurchase = function(id, amount, cb) {
+/* 
+{
+    message: "Created purchase and added it to the account",
+    code: 201,
+    objectCreated: {
+        merchant_id: "58d632301756fc834d9064e9",
+        medium: "balance",
+        amount: 9.63,
+        status: "pending",
+        type: "merchant",
+        payer_id: "56c8f105061b2d440baf43ed",
+        _id: "58d6334d1756fc834d9064ed"
+        }
+}
+*/
+
+    request({
+        url: BASE_URL + '/accounts/' + id + '/purchases?key=' + API_KEY,
+        json: {
+            "merchant_id": MERCHANT_ID,
+            "medium": "balance",
+            "amount": amount,
+        },
+        method: 'POST'
+    }, function(err, res, body) {
+        cb(err, body);
+    });
+}
