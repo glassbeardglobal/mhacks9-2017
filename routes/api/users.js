@@ -6,6 +6,25 @@ var router = express.Router();
 var User = require('../../models/User');
 var cap1 = require('../../apis/capital_one.js');
 
+function findUser(req, cb) {
+  if (!req.query.phoneNumber)
+    return cb({
+      status: 404,
+      message: "query parameter phoneNumber must be supplied"
+    });
+
+  User.findOne({ 'phoneNumber': req.query.phoneNumber }, function(err, user) {
+    if (err)
+      return cb(err);
+    if (!user)
+      return cb({
+        status: 404,
+        message: "User not found"
+      });
+
+    cb(null, user);
+  });
+}
 
 router.get('/', function(req, res, next) {
   User.find(function(err, users) {
@@ -56,30 +75,40 @@ router.post('/', function(req, res, next) {
 
 /**
  * @api {get} /api/users/auth Authenticate User
- * @apiName GetUsers
+ * @apiName GetUserAuth
  * @apiGroup Users
  * @apiDescription Authenticate a user with phone number
  * @apiParam {String} phoneNumber
 */
 router.get('/auth', function(req, res, next) {
-  if (!req.query.phoneNumber)
-    return next({
-      status: 404,
-      message: "query parameter phoneNumber must be supplied"
-    });
-
-  User.findOne({ 'phoneNumber': req.query.phoneNumber }, function(err, user) {
+  findUser(req, function(err, user) {
     if (err)
       return next(err);
-    if (!user)
-      return next({
-        status: 404,
-        message: "User not found"
-      });
-
     res.json({
       success: true,
       user: user
+    });
+  });
+});
+
+/**
+ * @api {get} /api/users/purchases Get User Purchases
+ * @apiName GetUserPurchases
+ * @apiGroup Users
+ * @apiDescription Get a users purchases
+ * @apiParam {String} phoneNumber
+*/
+router.get('/purchases', function(req, res, next) {
+  findUser(req, function(err, user) {
+    if (err)
+      return next(err);
+    cap1.getPurchases(user.nessieId, function(err, data) {
+      if (err)
+        return next(err);
+      res.json({
+        success: true,
+        purchases: data
+      });
     });
   });
 });

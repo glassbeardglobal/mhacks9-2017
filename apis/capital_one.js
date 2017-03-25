@@ -7,7 +7,6 @@ const MERCHANT_ID = '58d632301756fc834d9064e9';
 var request = require('request');
 
 
-exports.getAllAccountInfo = function(cb) {
 /* NOTE: RETURNS ARRAY OF OBJECTS
 {
     _id: "56c66be6a73e492741507b69",
@@ -18,7 +17,7 @@ exports.getAllAccountInfo = function(cb) {
     type: "Checking"
 }
 */
-
+function getAllAccountInfo(cb) {
     request({
         url: BASE_URL + '/accounts?key=' + API_KEY,
         method: 'GET'
@@ -28,7 +27,6 @@ exports.getAllAccountInfo = function(cb) {
 }
 
 
-exports.getAllCustomers = function(cb) {
 /* NOTE: RETURNS ARRAY OF OBJECTS
 {
     _id: "56c66be5a73e49274150728d",
@@ -43,7 +41,7 @@ exports.getAllCustomers = function(cb) {
     first_name: "Matthew"
 }
 */
-
+function getAllCustomers(cb) {
     request({
         url: BASE_URL + '/customers?key=' + API_KEY,
         method: 'GET'
@@ -53,7 +51,6 @@ exports.getAllCustomers = function(cb) {
 }
 
 
-exports.createAccount = function(first_name, last_name, cb) {
 /*
 {
     code: 201,
@@ -68,6 +65,7 @@ exports.createAccount = function(first_name, last_name, cb) {
     }
 }
 */
+function createAccount(first_name, last_name, cb) {
     // First we need to create the customer
     request({
         url: BASE_URL + '/customers?key=' + API_KEY,
@@ -104,7 +102,6 @@ exports.createAccount = function(first_name, last_name, cb) {
 }
 
 
-exports.makePurchase = function(id, amount, cb) {
 /* 
 {
     message: "Created purchase and added it to the account",
@@ -120,7 +117,7 @@ exports.makePurchase = function(id, amount, cb) {
         }
 }
 */
-
+function makePurchase(id, amount, cb) {
     request({
         url: BASE_URL + '/accounts/' + id + '/purchases?key=' + API_KEY,
         json: {
@@ -132,4 +129,24 @@ exports.makePurchase = function(id, amount, cb) {
     }, function(err, res, body) {
         cb(err, body);
     });
+}
+
+function getPurchases(id, cb) {
+    request({
+        uri: '/accounts/' + id + '/purchasses',
+        baseUrl: BASE_URL,
+        method: 'GET',
+        qs: { key: API_KEY },
+        json: true
+    }, function(err, resp, data) {
+        cb(err, data);
+    });
+}
+
+module.exports = {
+    getAllAccountInfo: getAllAccountInfo,
+    getAllCustomers: getAllCustomers,
+    createAccount: createAccount,
+    makePurchase: makePurchase,
+    getPurchases: getPurchases
 }
