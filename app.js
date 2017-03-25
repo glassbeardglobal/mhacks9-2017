@@ -4,6 +4,15 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
+
+mongoose.connect(process.env.MONGO_CONNECTION_STRING, function(err) {
+  if (err) {
+    console.log('Could not connect to MongoDB database', err);
+  } else {
+    console.log('Connected to MongoDB database');
+  }
+});
 
 var routes = require('./routes/index');
 
