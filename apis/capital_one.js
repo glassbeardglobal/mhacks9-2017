@@ -122,8 +122,8 @@ function createAccount(first_name, last_name, cb) {
 */
 function makePurchase(id, amount, company, date, cb) {
     market.lookup(company, function(err, companies) {
-        var ticker = "";
-        if (len(companies) > 0) {
+        var ticker = "NO SYMBOL (" + company + ")";
+        if (companies.length > 0) {
             ticker = companies[0].Symbol;
         }
         request({

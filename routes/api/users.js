@@ -7,13 +7,16 @@ var User = require('../../models/User');
 var cap1 = require('../../apis/capital_one.js');
 
 function findUser(req, cb) {
-  if (!req.query.phoneNumber)
+  if (!req.query.phoneNumber && !req.body.phoneNumber)
     return cb({
       status: 404,
       message: "query parameter phoneNumber must be supplied"
     });
 
-  User.findOne({ 'phoneNumber': req.query.phoneNumber }, function(err, user) {
+  var pn = req.query.phoneNumber;
+  if (!pn)
+    pn = req.body.phoneNumber;
+  User.findOne({ 'phoneNumber': pn }, function(err, user) {
     if (err)
       return cb(err);
     if (!user)
@@ -61,6 +64,7 @@ router.post('/', function(req, res, next) {
       return next(err);
 
     req.body.nessieId = body.objectCreated.customer_id;
+    req.body.accountId = body.objectCreated._id;
     User.create(req.body, function(err, user) {
       if (err) {
         return next(err);
@@ -92,6 +96,38 @@ router.get('/auth', function(req, res, next) {
 });
 
 /**
+ * @api {post} /api/users/purchase Create User Purchase
+ * @apiName PostUserPurchase
+ * @apiGroup Users
+ * @apiDescription Make a purchase for the user
+ * @apiParam {String} phoneNumber
+ * @apiParam {Number} amount
+ * @apiParam {String} company
+ * @apiParam {String} date
+*/
+router.post('/purchase', function(req, res, next) {
+  findUser(req, function(err, user) {
+    if (err)
+      return next(err);
+    if (!req.body.amount || !req.body.company || !req.body.date)
+      return next({
+        status: 400,
+        message: "Proper parameters must be provided"
+      });
+
+    cap1.makePurchase(
+      user.accountId,
+      req.body.amount,
+      req.body.company,
+      new Date(req.body.date),
+      function(err, data) {
+        res.json({ success: true });
+      }
+    );
+  });
+});
+
+/**
  * @api {get} /api/users/purchases Get User Purchases
  * @apiName GetUserPurchases
  * @apiGroup Users
@@ -102,7 +138,7 @@ router.get('/purchases', function(req, res, next) {
   findUser(req, function(err, user) {
     if (err)
       return next(err);
-    cap1.getPurchases(user.nessieId, function(err, data) {
+    cap1.getPurchases(user.accountId, function(err, data) {
       if (err)
         return next(err);
       res.json({
