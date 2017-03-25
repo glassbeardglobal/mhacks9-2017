@@ -133,7 +133,7 @@ function makePurchase(id, amount, cb) {
 
 function getPurchases(id, cb) {
     request({
-        uri: '/accounts/' + id + '/purchasses',
+        uri: '/accounts/' + id + '/purchases',
         baseUrl: BASE_URL,
         method: 'GET',
         qs: { key: API_KEY },
