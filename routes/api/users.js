@@ -149,6 +149,14 @@ router.get('/purchases', function(req, res, next) {
   });
 });
 
+
+/**
+ * @api {get} /api/users/user-proportional-purchases Get Proportional Purchases
+ * @apiName GetUserProportionalPurchases
+ * @apiGroup Users
+ * @apiDescription Get the proportion of user's purchases
+ * @apiParam {String} phoneNumber
+*/
 router.get('/user-proportional-purchases', function(req, res, next) {
   findUser(req, function(err, user) {
     if(err)
