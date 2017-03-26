@@ -15,8 +15,6 @@ angular.module('myApp.home', ['ngRoute'])
   '$http',
   'persist',
   function($scope, $location, $http, persist) {
-    // TESTING ONLY
-    persist.phone = '1111111111';
 
     if (!persist.phone || persist.phone.length < 10)
       $location.path('/');
