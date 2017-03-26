@@ -119,12 +119,20 @@ router.post('/purchase', function(req, res, next) {
         message: "Proper parameters must be provided"
       });
 
+    req.body.amount = Number(req.body.amount);
+
     cap1.makePurchase(
       user.accountId,
       req.body.amount,
       req.body.company,
       new Date(req.body.date),
       function(err, data) {
+        console.log(data);
+        if (data.code >= 400)
+          return next({
+            status: data.code,
+            err: data
+          });
         res.json({ success: true });
       }
     );

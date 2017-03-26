@@ -23,7 +23,7 @@ describe('Market API Functions', function() {
 
   it('should search unlisted companies', function(done) {
     this.timeout(5000);
-    market.lookup('Dunkin', function(err, data) {
+    market.lookup('Amazon', function(err, data) {
       console.log(data);
 
       done();
@@ -52,8 +52,7 @@ describe('Market API Functions', function() {
   it('should get intradayChart data for a ticker', function(done) {
     this.timeout(5000);
     market.intradayChart('NVDA', function(err, data) {
-      data.should.be.a('object');
-      data.should.have.property('Time Series (15min)');
+      data.should.be.a('array');
 
       done();
     });

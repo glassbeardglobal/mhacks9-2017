@@ -121,10 +121,19 @@ function createAccount(first_name, last_name, cb) {
 */
 function makePurchase(id, amount, company, date, cb) {
     market.lookup(company, function(err, companies) {
-        var ticker = "NO SYMBOL (" + company + ")";
+        var ticker = null;
         if (companies.length > 0) {
             ticker = companies[0].Symbol;
         }
+        var desc = JSON.stringify({
+            symbol: ticker,
+            name: company
+        });
+
+        var month = date.getUTCMonth() + 1; //months from 1-12
+        var day = date.getUTCDate();
+        var year = date.getUTCFullYear();
+
         request({
             url: BASE_URL + '/accounts/' + id + '/purchases',
             qs: { key: API_KEY },
@@ -132,8 +141,8 @@ function makePurchase(id, amount, company, date, cb) {
                 "merchant_id": MERCHANT_ID,
                 "medium": "balance",
                 "amount": amount,
-                "purchase_date": date.toString(),
-                "description": ticker
+                "purchase_date": month + "/" + day + "/" + year,
+                "description": desc
             },
             method: 'POST'
         }, function(err, res, body) {
