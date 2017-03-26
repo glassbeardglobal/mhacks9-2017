@@ -29,6 +29,7 @@ function findUser(req, cb) {
   });
 }
 
+
 router.get('/', function(req, res, next) {
   User.find(function(err, users) {
     if (err)
@@ -40,6 +41,7 @@ router.get('/', function(req, res, next) {
     });
   });
 });
+
 
 /**
  * @api {post} /api/users Create Users
@@ -77,6 +79,7 @@ router.post('/', function(req, res, next) {
   });
 });
 
+
 /**
  * @api {get} /api/users/auth Authenticate User
  * @apiName GetUserAuth
@@ -94,6 +97,7 @@ router.get('/auth', function(req, res, next) {
     });
   });
 });
+
 
 /**
  * @api {post} /api/users/purchase Create User Purchase
@@ -126,6 +130,7 @@ router.post('/purchase', function(req, res, next) {
     );
   });
 });
+
 
 /**
  * @api {get} /api/users/purchases Get User Purchases
@@ -191,6 +196,22 @@ router.get('/user-proportional-purchases', function(req, res, next) {
       res.json(JSON.parse(retVal));
 
     });
+  });
+});
+
+
+/**
+ * @api {get} /api/users/company-data Get a Company's Historical Market Data
+ * @apiName GetCompanyData
+ * @apiGroup Users
+ * @apiDescription Gets a company's historical stock data
+ * @apiParam {String} company ticker
+*/
+router.get('/company-data', function(req, res, next) {
+  dailyChart(req, function(err, data) {
+    if(err)
+      return next(err);
+    res.json(JSON.parse(data));
   });
 });
 
