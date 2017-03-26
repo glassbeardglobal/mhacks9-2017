@@ -188,7 +188,7 @@ router.get('/user-proportional-purchases', function(req, res, next) {
           }
         }
 
-      res.json(retVal);
+      res.json(JSON.parse(retVal));
 
     });
   });
