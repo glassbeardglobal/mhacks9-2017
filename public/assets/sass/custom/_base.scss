@@ -1,0 +1,42 @@
+body {
+  background-color: $mid-black;
+  color: #fff;
+
+  .navbar-default {
+    background-color: $mid-black;
+    color: #fff;
+  }
+
+  .navbar-default .navbar-brand,
+  .navbar-default .navbar-nav > li {
+    color: $mint;
+
+    &:hover,
+    &:active,
+    &:focus {
+      color: $mint-hover;
+    }
+
+    >a {
+      color: $mint;
+
+      &:hover,
+      &:active,
+      &:focus {
+        color: $mint-hover;
+      }
+    }
+  }
+
+  .btn-mint {
+    border-color: $mint;
+    color: $mint;
+
+    &:hover,
+    &:focus,
+    &:active {
+      border-color: $mint-hover;
+      color: $mint-hover;
+    }
+  }
+}

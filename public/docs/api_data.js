@@ -1,5 +1,53 @@
 define({ "api": [
   {
+    "type": "post",
+    "url": "/api/stocks/daily",
+    "title": "Daily Prices",
+    "name": "DailyStocks",
+    "group": "Stocks",
+    "description": "<p>Get Daily Prices of a given stock</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "ticker",
+            "description": ""
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "./routes/api/stocks.js",
+    "groupTitle": "Stocks"
+  },
+  {
+    "type": "post",
+    "url": "/api/stocks/intraday",
+    "title": "Intraday Prices",
+    "name": "IntradayStocks",
+    "group": "Stocks",
+    "description": "<p>Get Intraday Prices of a given stock</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "ticker",
+            "description": ""
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "./routes/api/stocks.js",
+    "groupTitle": "Stocks"
+  },
+  {
     "type": "get",
     "url": "/api/users/auth",
     "title": "Authenticate User",

@@ -12,5 +12,12 @@ router.get('/', function(req, res, next) {
 });
 
 router.use('/users', require('./users'));
+router.use('/stocks', require('./stocks'));
+
+router.use(function(req, res, next) {
+  var err = new Error('API Route Not Found');
+  err.status = 404;
+  next(err);
+});
 
 module.exports = router;

@@ -1,6 +1,6 @@
 var request = require('request');
 
-var base = 'http://dev.markitondemand.com/Api/v2/';
+var base = 'http://dev.markitondemand.com/MODApis/Api/v2/';
 var aa_base = 'http://www.alphavantage.co/';
 
 var aa_key = '7103';
@@ -49,6 +49,36 @@ function interdayChart(ticker, numDays, cb) {
   });
 }
 
+function processTimeSeries(ts, attr) {
+  var res = [];
+  console.log(ts);
+  var tseries = ts[attr];
+  for (var time in tseries) {
+    if (tseries.hasOwnProperty(time)) {
+      res.push({
+        date: new Date(time),
+        price: tseries[time]["4. close"]
+      });
+    }
+  }
+
+  res.sort(function(a, b) {
+    if (a.date < b.date) {
+      return -1;
+    } else if (a.date == b.date) {
+      return 0;
+    } else {
+      return 1;
+    }
+  });
+
+  res.forEach(function(d) {
+    d.date = d.date.toISOString();
+  });
+
+  return res;
+}
+
 /*
  * Gets most recent stock data divided into 15 min intervals
 */
@@ -60,13 +90,13 @@ function intradayChart(ticker, cb) {
     qs: {
       function: 'TIME_SERIES_INTRADAY',
       symbol: ticker,
-      interval: '15min',
+      interval: '5min',
       outputsize: 'full',
       apikey: aa_key
     },
     json: true
   }, function(err, resp, data) {
-    cb(err, data);
+    cb(err, processTimeSeries(data, 'Time Series (5min)'));
   });
 }
 
@@ -83,7 +113,7 @@ function dailyChart(ticker, cb) {
     },
     json: true
   }, function(err, resp, data) {
-    cb(err, data);
+    cb(err, processTimeSeries(data, 'Time Series (Daily)'));
   });
 }
 
