@@ -127,7 +127,7 @@ router.post('/purchase', function(req, res, next) {
       req.body.company,
       new Date(req.body.date),
       function(err, data) {
-        console.log(data);
+        // console.log(data);
         if (data.code >= 400)
           return next({
             status: data.code,
@@ -182,18 +182,15 @@ router.get('/user-proportional-purchases', function(req, res, next) {
       var total = 0;
       for(var i = 0; i < data.length; ++i) {
         total += data[i].amount;
-        if(retVal.hasOwnProperty(data[i].description)) {
-          var currSoFar = retVal[data[i].description];
-          currSoFar.amount += data[i].amount;
-          retVal[data[i].description] = currSoFar;
+        if(retVal.hasOwnProperty(JSON.parse(data[i].description).symbol)) {
+          retVal[JSON.parse(data[i].description).symbol].amount += data[i].amount;
         } else {
-          retVal[data[i].description] = {
-            "amount": data[i].amount,
-            "percentage": 0
+            retVal[JSON.parse(data[i].description).symbol] = {
+              "amount": data[i].amount,
+              "percentage": 0
           };
         }
       }
-      retVal['total'] = total;
 
       for(var key in retVal) {
         if(retVal.hasOwnProperty(key)) {
@@ -202,6 +199,7 @@ router.get('/user-proportional-purchases', function(req, res, next) {
         }
 
       res.json(retVal);
+
     });
   });
 });
