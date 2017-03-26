@@ -56,7 +56,8 @@ function processTimeSeries(ts, attr) {
     if (tseries.hasOwnProperty(time)) {
       res.push({
         date: new Date(time),
-        price: tseries[time]["4. close"]
+        price: tseries[time]["4. close"],
+        opening: tseries[time]["1. open"]
       });
     }
   }

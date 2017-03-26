@@ -162,6 +162,63 @@ router.get('/purchases', function(req, res, next) {
   });
 });
 
+/**
+ * @api {get} /api/users/delete-purchases Delete User Purchases
+ * @apiName DeleteUserPurchases
+ * @apiGroup Users
+ * @apiDescription Delete a users purchases
+ * @apiParam {String} phoneNumber
+*/
+router.get('/delete-purchases', function(req, res, next) {
+  findUser(req, function(err, user) {
+    if (err)
+      return next(err);
+    cap1.clearPurchases(user.accountId);
+    res.json({
+      success: true
+    });
+  });
+});
+
+/**
+ * @api {get} /api/users/delete-account Delete User Account
+ * @apiName DeleteUserPurchases
+ * @apiGroup Users
+ * @apiDescription Delete a users account
+ * @apiParam {String} phoneNumber
+*/
+router.get('/reset', function(req, res, next) {
+  findUser(req, function(err, user) {
+    if (err)
+      return next(err);
+    User.remove({ _id: user._id }, function(err) {
+      if (err)
+        return next(err);
+      cap1.createAccount(user.firstName, user.lastName, function(err, body) {
+        if (err)
+          return next(err);
+
+        var doc = {};
+        doc.nessieId = body.objectCreated.customer_id;
+        doc.accountId = body.objectCreated._id;
+        doc.firstName = user.firstName;
+        doc.lastName = user.lastName;
+        doc.phoneNumber = user.phoneNumber;
+        doc.password = user.password;
+        User.create(doc, function(err, user) {
+          if (err) {
+            return next(err);
+          }
+          res.json({
+            success: true,
+            user: user
+          });
+        });
+      });
+    })
+  });
+});
+
 
 /**
  * @api {get} /api/users/user-proportional-purchases Get Proportional Purchases
@@ -233,6 +290,7 @@ router.get('/company-data', function(req, res, next) {
 });
 
 
+
 router.get('/the-beast', function(req, res, next) {
   findUser(req, function(err, user) {
     if(err)
@@ -240,29 +298,75 @@ router.get('/the-beast', function(req, res, next) {
     cap1.getPurchases(user.accountId, function(err, data) {
       if(err)
         return next(err);
+      var retVal = [];
       var map = getMapping(data);
-      var retVal = {};
+
+      globalCounter = 0;
       for(var key in map) {
-        var total = 0;
         if(map.hasOwnProperty(key)) {
-          map[key].forEach(function(val) {
-            market.dailyChart(key, function(err, data) {
-              if(err)
-                return null;
-              var date = formateDate(new Date(val.date));
-              var marketData = findItem(date.toString(), data);
-
-              var ourAmount = val.value;
-              var price = marketData.price;
-              var share = ourAmount / price;
-
-            });
-          });
+          processCurrKey(map, key, res, retVal);
         }
       }
     });
   });
 });
+
+var globalCounter = 0;
+var val_values = [];
+function processCurrKey(map, key, res, retVal) {
+  var returningData = [];
+  var temp = false;
+  map[key].forEach(function(val) {
+    market.dailyChart(key, function(err, data) {
+      val_values.push(val.value);
+      ++globalCounter;
+      if(err)
+        return null;
+      var date = formateDate(new Date(val.date));
+      var marketData = findItem(date.toString(), data);
+
+      var ourAmount = val.value;
+      var price = marketData.price;
+
+      retVal.push({
+        "ticker": key,
+        "price": price,
+        "date": date,
+        "opening": marketData.opening
+      });
+
+      if(globalCounter == Object.keys(map).map(k => map[k].length).reduce((a,b) => a + b, 0)) {
+
+        retVal.sort(function(a, b) {
+          return new Date(a.date) - new Date(b.date);
+        });
+
+        returningData.push({
+          "date": retVal[0].date,
+          "closing": retVal[0].price,
+          "opening": retVal[0].opening,
+          "ticker": retVal[0].ticker,
+          "value": val_values[0]
+        });
+
+        for(var i = 1; i < retVal.length; ++i) {
+          var previousMarketData = returningData[i - 1];
+          var delta = previousMarketData.closing / previousMarketData.opening;
+          var newAmount = (previousMarketData.value * delta) + val_values[i];
+          
+          returningData.push({
+            "date": retVal[i].date,
+            "closing": retVal[i].price,
+            "opening": retVal[i].opening,
+            "ticker": retVal[i].ticker,
+            "value": newAmount
+          });
+        }
+        res.json(returningData);
+      }
+    });
+  });
+}
 
 
 function formateDate(d) {
@@ -287,29 +391,6 @@ function findItem(checkDate, data) {
 }
 
 
-function percentShare(map) {
-  var retVal = {};
-  for(var key in map) {
-    var total = 0;
-    if(map.hasOwnProperty(key)) {
-      map[key].forEach(function(val) {
-        market.dailyChart(key, function(err, data) {
-          if(err)
-            return null;
-          var date = formateDate(new Date(val.date));
-          var marketData = findItem(date.toString(), data);
-
-          var ourAmount = val.value;
-          var price = marketData.price;
-          var share = ourAmount / price;
-
-        });
-      });
-    }
-  }
-}
-
-
 function getMapping(data) {
   var retVal = {};
   for(var i = 0; i < data.length; ++i) {
@@ -321,6 +402,15 @@ function getMapping(data) {
       "value": data[i].amount
     });
   }
+
+  for(var key in retVal) {
+    if(retVal.hasOwnProperty(key)) {
+      retVal[key].sort(function(a, b) {
+        return new Date(a.date).getTime() - new Date(b.date).getTime();
+      });
+    }
+  }
+
   return retVal;
 }
 

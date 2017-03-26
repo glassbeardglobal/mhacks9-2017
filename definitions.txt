@@ -1,0 +1,15 @@
+Investment: Something that is purchased with the hope that it will generate income or will appreciate in the future.
+
+Stock Market: The collection of markets and exchanges where the issuing and trading of equities (stocks of publicly held companies), bonds and other sorts of securities takes place.
+
+Stock: A stock is a share in the ownership of a company. Stock represents a claim on the company's assets and earnings.
+
+Dividend: A dividend is a distribution of a portion of a company's earnings, decided by the board of directors, to a class of its shareholders.
+
+Volume: The total quantity of shares or contracts traded for a specified security
+
+P/E Ratio: (Price-earnings ratio) The ratio for valuing a company that measures its current share price relative to its per-share earnings
+
+Div/Yield: A financial ratio that indicates how much a company pays out in dividends each year relative to its share price.
+
+Market Cap:

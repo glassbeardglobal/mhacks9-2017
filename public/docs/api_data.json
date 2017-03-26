@@ -49,6 +49,30 @@
   },
   {
     "type": "get",
+    "url": "/api/stocks/stats",
+    "title": "Stock Stats",
+    "name": "StatsStock",
+    "group": "Stocks",
+    "description": "<p>Get Yahoo stats about a stock</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "ticker",
+            "description": ""
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "./routes/api/stocks.js",
+    "groupTitle": "Stocks"
+  },
+  {
+    "type": "get",
     "url": "/api/users/company-data",
     "title": "Get a Company's Historical Market Data",
     "name": "GetCompanyData",

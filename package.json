@@ -12,8 +12,10 @@
     "express": "~4.13.4",
     "mongoose": "^4.9.1",
     "morgan": "~1.7.0",
+    "npm": "^4.4.4",
     "request": "^2.81.0",
     "serve-favicon": "~2.3.0",
+    "yahoo-finance": "^0.2.16",
     "zfill": "0.0.2"
   },
   "devDependencies": {
