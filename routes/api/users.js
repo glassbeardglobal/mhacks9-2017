@@ -195,14 +195,13 @@ router.get('/user-proportional-purchases', function(req, res, next) {
       }
       retVal['total'] = total;
 
-      for(key in retVal) {
+      for(var key in retVal) {
         if(retVal.hasOwnProperty(key)) {
             retVal[key].percentage = retVal[key].amount / total;
           }
         }
 
-      res.json(JSON.parse(retVal));
-
+      res.json(retVal);
     });
   });
 });
@@ -219,7 +218,7 @@ router.get('/company-data', function(req, res, next) {
   dailyChart(req, function(err, data) {
     if(err)
       return next(err);
-    res.json(JSON.parse(data));
+    res.json(data);
   });
 });
 

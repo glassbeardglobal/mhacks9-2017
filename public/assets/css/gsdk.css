@@ -1433,6 +1433,12 @@ body {
     body .btn-mint:hover, body .btn-mint:focus, body .btn-mint:active {
       border-color: #AAF9D2;
       color: #AAF9D2; }
+  body .btn-mint-dark {
+    border-color: #21ce99;
+    color: #21ce99; }
+    body .btn-mint-dark:hover, body .btn-mint-dark:focus, body .btn-mint-dark:active {
+      border-color: #1ed299;
+      color: #1ed299; }
 
 .landing > h1 {
   margin-top: 16vh;
@@ -1461,6 +1467,30 @@ body {
     margin-top: 32px;
     display: block;
     margin: auto; }
+
+.home h3, .home h6 {
+  color: white;
+  text-align: center; }
+.home .table > tbody > tr > th,
+.home .table > tbody > tr > td {
+  border-color: #A9F1D0; }
+.home .table > tbody > tr:first-child > th,
+.home .table > tbody > tr:first-child > td {
+  border-top: none; }
+.home .table > tbody > tr > td:first-child {
+  width: 75%; }
+.home .table > tbody .tr-primary {
+  font-weight: bold;
+  cursor: pointer;
+  background-color: #323532; }
+  .home .table > tbody .tr-primary:hover > td {
+    background-color: #525852; }
+
+#purchaseModal {
+  color: #000; }
+  #purchaseModal .form-control {
+    padding: 3px 6px;
+    font-size: 19px; }
 
 .dropdown-menu {
   margin: 0;

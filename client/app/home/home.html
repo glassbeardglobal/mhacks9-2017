@@ -1,4 +1,51 @@
-<div class="container">
+<div class="container home">
   <h3>{{ name }}</h3>
   <h6>{{ phone | tel }}</h6>
+
+  <br />
+  <h6>Purchase Count: {{ purchases.length }}</h6>
+
+  <table class="table">
+    <tbody>
+      <tr class="tr-primary" ng-click="handleAddPurchase()">
+        <td class="td-primary">
+          <i class="fa fa-plus-circle" aria-hidden="true"></i> Add New Purchase
+        </td>
+        <td></td>
+        <td></td>
+      </tr>
+
+      <tr ng-repeat="purchase in purchases">
+        <td>{{ purchase.description.name }}</td>
+        <td>{{ purchase.purchase_date }}</td>
+        <td>{{ purchase.amount | currency:"$" }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="purchaseModal" tabindex="-1" role="dialog" aria-labelledby="purchaseModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="purchaseModalLabel">Create New Purchase</h4>
+      </div>
+      <div class="modal-body form-group">
+        <label>Company</label>
+        <input type="text" class="form-control" ng-model="formCompany"></input>
+
+        <label>Amount</label>
+        <input type="text" class="form-control" ng-model="formAmount"></input>
+
+        <label>Date</label>
+        <input type="text" class="form-control" ng-model="formDate"></input>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-mint-dark" ng-click="processPurchase()">Add Purchase</button>
+      </div>
+    </div>
+  </div>
 </div>

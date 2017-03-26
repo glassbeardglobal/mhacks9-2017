@@ -1,0 +1,40 @@
+.home {
+  h3, h6 {
+    color: white;
+    text-align: center;
+  }
+
+  .table > tbody {
+    >tr > th,
+    >tr > td {
+      border-color: $mint;
+    }
+
+    >tr:first-child > th,
+    >tr:first-child > td, {
+      border-top: none;
+    }
+
+    >tr > td:first-child {
+      width: 75%;
+    }
+
+    .tr-primary {
+      font-weight: bold;
+      cursor: pointer;
+      background-color: #323532;
+      &:hover > td {
+        background-color: #525852;
+      }
+    }
+  }
+}
+
+#purchaseModal {
+  color: #000;
+
+  .form-control {
+    padding: 3px 6px;
+    font-size: 19px;
+  }
+}

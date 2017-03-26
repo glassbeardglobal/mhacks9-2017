@@ -39,4 +39,16 @@ body {
       color: $mint-hover;
     }
   }
+
+  .btn-mint-dark {
+    border-color: $mint-dark;
+    color: $mint-dark;
+
+    &:hover,
+    &:focus,
+    &:active {
+      border-color: $mint-hover-dark;
+      color: $mint-hover-dark;
+    }
+  }
 }

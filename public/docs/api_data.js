@@ -1,6 +1,6 @@
 define({ "api": [
   {
-    "type": "post",
+    "type": "get",
     "url": "/api/stocks/daily",
     "title": "Daily Prices",
     "name": "DailyStocks",
@@ -24,7 +24,7 @@ define({ "api": [
     "groupTitle": "Stocks"
   },
   {
-    "type": "post",
+    "type": "get",
     "url": "/api/stocks/intraday",
     "title": "Intraday Prices",
     "name": "IntradayStocks",
@@ -49,11 +49,59 @@ define({ "api": [
   },
   {
     "type": "get",
+    "url": "/api/users/company-data",
+    "title": "Get a Company's Historical Market Data",
+    "name": "GetCompanyData",
+    "group": "Users",
+    "description": "<p>Gets a company's historical stock data</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "company",
+            "description": "<p>ticker</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "./routes/api/users.js",
+    "groupTitle": "Users"
+  },
+  {
+    "type": "get",
     "url": "/api/users/auth",
     "title": "Authenticate User",
     "name": "GetUserAuth",
     "group": "Users",
     "description": "<p>Authenticate a user with phone number</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "phoneNumber",
+            "description": ""
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "./routes/api/users.js",
+    "groupTitle": "Users"
+  },
+  {
+    "type": "get",
+    "url": "/api/users/user-proportional-purchases",
+    "title": "Get Proportional Purchases",
+    "name": "GetUserProportionalPurchases",
+    "group": "Users",
+    "description": "<p>Get the proportion of user's purchases</p>",
     "parameter": {
       "fields": {
         "Parameter": [
