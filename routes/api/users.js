@@ -149,4 +149,41 @@ router.get('/purchases', function(req, res, next) {
   });
 });
 
+router.get('/user-proportional-purchases', function(req, res, next) {
+  findUser(req, function(err, user) {
+    if(err)
+      return next(err);
+    cap1.getPurchases(user.accountId, function(err, data) {
+      if(err)
+        return next(err);
+      // Constructing a custom object to send back
+      var retVal = {};
+      var total = 0;
+      for(var i = 0; i < data.length; ++i) {
+        total += data[i].amount;
+        if(retVal.hasOwnProperty(data[i].description)) {
+          var currSoFar = retVal[data[i].description];
+          currSoFar.amount += data[i].amount;
+          retVal[data[i].description] = currSoFar;
+        } else {
+          retVal[data[i].description] = {
+            "amount": data[i].amount,
+            "percentage": 0
+          };
+        }
+      }
+      retVal['total'] = total;
+
+      for(key in retVal) {
+        if(retVal.hasOwnProperty(key)) {
+            retVal[key].percentage = retVal[key].amount / total;
+          }
+        }
+
+      res.json(retVal);
+
+    });
+  });
+});
+
 module.exports = router;

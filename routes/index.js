@@ -1,40 +1,41 @@
 'use strict';
 
 var express = require('express');
+var zfill = require('zfill');
 var router = express.Router();
 var cap_one = require('../apis/capital_one.js');
+var User = require('../models/User.js');
+
+
+function getFormattedDate() {
+	var today = new Date();
+	var year = today.getFullYear();
+	var month = zfill(today.getMonth(), 2);
+	var day = zfill(today.getDay(), 2);
+	return year + '-' + month + '-' + day;
+}
+
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-	// cap_one.createAccount('fstname', 'lstname', function(err, data) {
-	// 	if(!err) {
-	// 		res.json(data);
-	// 	} else {
-	// 		console.log(err);
-	// 	}
-	// });
+
+    // "nessieId": "56c66be5a73e49274150728d"
+    // "accountId": "56c66be6a73e492741507b69"
+
 	// cap_one.getAllAccountInfo(function(err, data) {
-	// 	if(!err) {
-	// 		res.json(data);
-	// 	} else {
-	// 		res.status(404).send();
-	// 	}
+	// 	res.json(data);
 	// });
-	// cap_one.getAllCustomers(function(err, data) {
-	// 	if(!err) {
-	// 		res.json(data);
-	// 	} else {
-	// 		res.status(404).send();
-	// 	}
+
+	// cap_one.makePurchase('56c66be6a73e492741507b69',
+	// 					150.00, 'google',
+	// 					getFormattedDate(), function(err, data) {
+	// 	res.json(data);
 	// });
-	// cap_one.makePurchase('56c8f105061b2d440baf43ed', 9.63, function(err, data) {
-	// 	if(!err) {
-	// 		res.json(data);
-	// 	} else {
-	// 		res.status(404).send();
-	// 	}
-	// });
-	res.json({data: "hi"});
+
+	cap_one.getPurchases('56c66be6a73e492741507b69', function(err, data) {
+		res.json(data);
+	});
+
 });
 
 

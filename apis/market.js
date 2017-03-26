@@ -1,9 +1,9 @@
 var request = require('request');
 
-var base = 'http://dev.markitondemand.com/Api/v2/';
-var aa_base = 'http://www.alphavantage.co/';
+const base = 'http://dev.markitondemand.com/Api/v2/';
+const aa_base = 'http://www.alphavantage.co/';
 
-var aa_key = '7103';
+const aa_key = '7103';
 
 function lookup(queryString, cb) {
   request({
@@ -50,7 +50,7 @@ function interdayChart(ticker, numDays, cb) {
 }
 
 /*
- * Gets most recent stock data divided into 15 min intervals
+ * Gets most recent stock data divided into 60 min intervals
 */
 function intradayChart(ticker, cb) {
   request({
@@ -60,7 +60,7 @@ function intradayChart(ticker, cb) {
     qs: {
       function: 'TIME_SERIES_INTRADAY',
       symbol: ticker,
-      interval: '15min',
+      interval: '60min',
       outputsize: 'full',
       apikey: aa_key
     },

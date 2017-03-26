@@ -1,7 +1,6 @@
 'use strict';
 
 var request = require('request');
-
 var market = require('./market');
 
 const API_KEY = '65be1ee16b2fbd6faade515551491370';
