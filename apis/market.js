@@ -51,7 +51,6 @@ function interdayChart(ticker, numDays, cb) {
 
 function processTimeSeries(ts, attr) {
   var res = [];
-  console.log(ts);
   var tseries = ts[attr];
   for (var time in tseries) {
     if (tseries.hasOwnProperty(time)) {

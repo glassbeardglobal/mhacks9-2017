@@ -17,7 +17,7 @@ function getFormattedDate() {
 
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/test', function(req, res, next) {
 
     // "nessieId": "56c66be5a73e49274150728d"
     // "accountId": "56c66be6a73e492741507b69"

@@ -1,8 +1,9 @@
 'use strict';
 
 var express = require('express');
+var zfill = require('zfill');
 var router = express.Router();
-
+var market = require('../../apis/market');
 var User = require('../../models/User');
 var cap1 = require('../../apis/capital_one.js');
 
@@ -127,7 +128,6 @@ router.post('/purchase', function(req, res, next) {
       req.body.company,
       new Date(req.body.date),
       function(err, data) {
-        // console.log(data);
         if (data.code >= 400)
           return next({
             status: data.code,
@@ -225,7 +225,7 @@ router.get('/user-proportional-purchases', function(req, res, next) {
  * @apiParam {String} company ticker
 */
 router.get('/company-data', function(req, res, next) {
-  dailyChart(req, function(err, data) {
+  market.dailyChart(req, function(err, data) {
     if(err)
       return next(err);
     res.json(data);
@@ -237,7 +237,91 @@ router.get('/the-beast', function(req, res, next) {
   findUser(req, function(err, user) {
     if(err)
       return next(err);
+    cap1.getPurchases(user.accountId, function(err, data) {
+      if(err)
+        return next(err);
+      var map = getMapping(data);
+      var retVal = {};
+      for(var key in map) {
+        var total = 0;
+        if(map.hasOwnProperty(key)) {
+          map[key].forEach(function(val) {
+            market.dailyChart(key, function(err, data) {
+              if(err)
+                return null;
+              var date = formateDate(new Date(val.date));
+              var marketData = findItem(date.toString(), data);
+
+              var ourAmount = val.value;
+              var price = marketData.price;
+              var share = ourAmount / price;
+
+            });
+          });
+        }
+      }
+    });
   });
 });
+
+
+function formateDate(d) {
+    var retVal = '';
+  	var temp = ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth()+1)).slice(-2) + '/' + d.getFullYear();
+    var arr = temp.split('/');
+    var retDate = new Date();
+    retDate.setDate(parseInt(arr[0]));
+    retDate.setMonth(parseInt(arr[1]));
+    retDate.setFullYear(parseInt(arr[2]));
+    retVal = retDate.getFullYear() + '-' + zfill(retDate.getMonth(), 2) + '-' + zfill(retDate.getDate(), 2);
+    return retVal;
+}
+
+
+function findItem(checkDate, data) {
+  for(var i = 0; i < data.length; ++i) {
+    if(new Date(data[i].date) == new Date(checkDate).toString()) {
+      return data[i];
+    }
+  }
+}
+
+
+function percentShare(map) {
+  var retVal = {};
+  for(var key in map) {
+    var total = 0;
+    if(map.hasOwnProperty(key)) {
+      map[key].forEach(function(val) {
+        market.dailyChart(key, function(err, data) {
+          if(err)
+            return null;
+          var date = formateDate(new Date(val.date));
+          var marketData = findItem(date.toString(), data);
+
+          var ourAmount = val.value;
+          var price = marketData.price;
+          var share = ourAmount / price;
+
+        });
+      });
+    }
+  }
+}
+
+
+function getMapping(data) {
+  var retVal = {};
+  for(var i = 0; i < data.length; ++i) {
+    if(!retVal.hasOwnProperty(JSON.parse(data[i].description).symbol)) {
+      retVal[JSON.parse(data[i].description).symbol] = [];  
+    }
+    retVal[JSON.parse(data[i].description).symbol].push({
+      "date": data[i].purchase_date,
+      "value": data[i].amount
+    });
+  }
+  return retVal;
+}
 
 module.exports = router;
