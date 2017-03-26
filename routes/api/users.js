@@ -178,27 +178,39 @@ router.get('/user-proportional-purchases', function(req, res, next) {
       if(err)
         return next(err);
       // Constructing a custom object to send back
-      var retVal = {};
+      var mapping = {};
+      var ret = [];
       var total = 0;
       for(var i = 0; i < data.length; ++i) {
         total += data[i].amount;
-        if(retVal.hasOwnProperty(JSON.parse(data[i].description).symbol)) {
-          retVal[JSON.parse(data[i].description).symbol].amount += data[i].amount;
+        if(mapping.hasOwnProperty(JSON.parse(data[i].description).symbol)) {
+          mapping[JSON.parse(data[i].description).symbol].amount += data[i].amount;
         } else {
-            retVal[JSON.parse(data[i].description).symbol] = {
+            mapping[JSON.parse(data[i].description).symbol] = {
               "amount": data[i].amount,
               "percentage": 0
           };
         }
       }
 
-      for(var key in retVal) {
-        if(retVal.hasOwnProperty(key)) {
-            retVal[key].percentage = retVal[key].amount / total;
+      for(var key in mapping) {
+        if(mapping.hasOwnProperty(key)) {
+            mapping[key].percentage = mapping[key].amount / total;
           }
         }
 
-      res.json(retVal);
+      for(key in mapping) {
+          if(mapping.hasOwnProperty(key)) {
+            var currObject = {
+              "ticker": key,
+              "amount": mapping[key].amount,
+              "percentage": mapping[key].percentage
+            };
+          ret.push(currObject);
+          }
+      }
+
+      res.json(ret);
 
     });
   });
@@ -217,6 +229,14 @@ router.get('/company-data', function(req, res, next) {
     if(err)
       return next(err);
     res.json(data);
+  });
+});
+
+
+router.get('/the-beast', function(req, res, next) {
+  findUser(req, function(err, user) {
+    if(err)
+      return next(err);
   });
 });
 
