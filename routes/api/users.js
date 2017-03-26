@@ -236,6 +236,7 @@ router.get('/user-proportional-purchases', function(req, res, next) {
         return next(err);
       // Constructing a custom object to send back
       var mapping = {};
+      var checkArray = [];
       var ret = [];
       var total = 0;
       for(var i = 0; i < data.length; ++i) {
@@ -263,8 +264,17 @@ router.get('/user-proportional-purchases', function(req, res, next) {
               "amount": mapping[key].amount,
               "percentage": mapping[key].percentage
             };
-          ret.push(currObject);
+          checkArray.push(currObject);
           }
+      }
+
+      for(var i = 0; i < checkArray.length; ++i) {
+        var c = checkArray[i];
+        if(!(c.ticker) || (c.ticker == 'null') || (c.ticker == 'undefined')) {
+          continue;
+        } else {
+          ret.push(c);
+        }
       }
 
       res.json(ret);
@@ -290,7 +300,6 @@ router.get('/company-data', function(req, res, next) {
 });
 
 
-
 router.get('/the-beast', function(req, res, next) {
   findUser(req, function(err, user) {
     if(err)
@@ -310,6 +319,8 @@ router.get('/the-beast', function(req, res, next) {
     });
   });
 });
+
+
 
 var globalCounter = 0;
 var val_values = [];
