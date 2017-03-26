@@ -327,7 +327,6 @@ var val_values = [];
 function processCurrKey(map, key, res, retVal) {
   var returningData = [];
   var retData = [];
-  var temp = false;
   map[key].forEach(function(val) {
     market.dailyChart(key, function(err, data) {
       val_values.push(val.value);
@@ -391,13 +390,13 @@ function processCurrKey(map, key, res, retVal) {
                 retData.push({
                   "date": returningData[i].date,
                   "value": returningData[i].value
-                })
+                });
               }
               res.json(retData);
+              val_values = [];
+              globalCounter = 0;
             }
           }
-
-
       }
     });
   });
