@@ -322,8 +322,12 @@ function processCurrKey(map, key, res, retVal) {
       ++globalCounter;
       if(err)
         return null;
+
       var date = formateDate(new Date(val.date));
       var marketData = findItem(date.toString(), data);
+
+      if(!marketData)
+        return;
 
       var ourAmount = val.value;
       var price = marketData.price;
@@ -353,7 +357,6 @@ function processCurrKey(map, key, res, retVal) {
           var previousMarketData = returningData[i - 1];
           var delta = previousMarketData.closing / previousMarketData.opening;
           var newAmount = (previousMarketData.value * delta) + val_values[i];
-          
           returningData.push({
             "date": retVal[i].date,
             "closing": retVal[i].price,
