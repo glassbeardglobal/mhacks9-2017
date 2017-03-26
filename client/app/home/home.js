@@ -31,6 +31,18 @@ angular.module('myApp.home', ['ngRoute'])
       $('#purchaseModal').modal('show');
     }
 
+    $scope.handleResetAccount = function() {
+      $http({
+        method: 'GET',
+        url: 'api/users/reset?phoneNumber=' + $scope.phone
+      }).then(function successCallback(response) {
+        // Make a copy
+        $location.path('/');
+      }, function errorCallback(response) {
+        console.log("Error!");
+      });
+    }
+
     $scope.processPurchase = function() {
       $http({
         method: 'POST',

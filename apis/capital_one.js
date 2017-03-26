@@ -163,10 +163,29 @@ function getPurchases(id, cb) {
     });
 }
 
+function clearPurchases(id) {
+    getPurchases(id, function(err, data) {
+        data.forEach(function(d) {
+            console.log(d);
+            request({
+                uri: '/purchases/' + d._id,
+                baseUrl: BASE_URL,
+                method: 'DELETE',
+                qs: { key: API_KEY },
+                json: true
+            }, function(err, resp, data) {
+                console.log(err);
+                console.log(data);
+            });
+        });
+    });
+}
+
 module.exports = {
     getAllAccountInfo: getAllAccountInfo,
     getAllCustomers: getAllCustomers,
     createAccount: createAccount,
     makePurchase: makePurchase,
-    getPurchases: getPurchases
+    getPurchases: getPurchases,
+    clearPurchases: clearPurchases
 }

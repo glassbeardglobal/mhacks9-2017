@@ -162,6 +162,64 @@ router.get('/purchases', function(req, res, next) {
   });
 });
 
+/**
+ * @api {get} /api/users/delete-purchases Delete User Purchases
+ * @apiName DeleteUserPurchases
+ * @apiGroup Users
+ * @apiDescription Delete a users purchases
+ * @apiParam {String} phoneNumber
+*/
+router.get('/delete-purchases', function(req, res, next) {
+  findUser(req, function(err, user) {
+    if (err)
+      return next(err);
+    cap1.clearPurchases(user.accountId);
+    res.json({
+      success: true
+    });
+  });
+});
+
+/**
+ * @api {get} /api/users/delete-account Delete User Account
+ * @apiName DeleteUserPurchases
+ * @apiGroup Users
+ * @apiDescription Delete a users account
+ * @apiParam {String} phoneNumber
+*/
+router.get('/reset', function(req, res, next) {
+  findUser(req, function(err, user) {
+    if (err)
+      return next(err);
+    User.remove({ _id: user._id }, function(err) {
+      if (err)
+        return next(err);
+      cap1.createAccount(user.firstName, user.lastName, function(err, body) {
+        if (err)
+          return next(err);
+
+        var doc = {};
+        doc.nessieId = body.objectCreated.customer_id;
+        doc.accountId = body.objectCreated._id;
+        doc.firstName = user.firstName;
+        doc.lastName = user.lastName;
+        doc.phoneNumber = user.phoneNumber;
+        doc.password = user.password;
+        console.log(doc);
+        User.create(doc, function(err, user) {
+          if (err) {
+            return next(err);
+          }
+          res.json({
+            success: true,
+            user: user
+          });
+        });
+      });
+    })
+  });
+});
+
 
 /**
  * @api {get} /api/users/user-proportional-purchases Get Proportional Purchases

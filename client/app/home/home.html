@@ -18,6 +18,14 @@
         <td>{{ purchase.purchase_date }}</td>
         <td>{{ purchase.amount | currency:"$" }}</td>
       </tr>
+
+      <tr class="tr-primary" ng-click="handleResetAccount()">
+        <td class="td-primary">
+          <i class="fa fa-minus-circle" aria-hidden="true"></i> Reset Account
+        </td>
+        <td></td>
+        <td></td>
+      </tr>
     </tbody>
   </table>
 </div>
