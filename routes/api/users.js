@@ -29,6 +29,7 @@ function findUser(req, cb) {
   });
 }
 
+
 router.get('/', function(req, res, next) {
   User.find(function(err, users) {
     if (err)
@@ -40,6 +41,7 @@ router.get('/', function(req, res, next) {
     });
   });
 });
+
 
 /**
  * @api {post} /api/users Create Users
@@ -77,6 +79,7 @@ router.post('/', function(req, res, next) {
   });
 });
 
+
 /**
  * @api {get} /api/users/auth Authenticate User
  * @apiName GetUserAuth
@@ -94,6 +97,7 @@ router.get('/auth', function(req, res, next) {
     });
   });
 });
+
 
 /**
  * @api {post} /api/users/purchase Create User Purchase
@@ -135,6 +139,7 @@ router.post('/purchase', function(req, res, next) {
   });
 });
 
+
 /**
  * @api {get} /api/users/purchases Get User Purchases
  * @apiName GetUserPurchases
@@ -154,6 +159,67 @@ router.get('/purchases', function(req, res, next) {
         purchases: data
       });
     });
+  });
+});
+
+
+/**
+ * @api {get} /api/users/user-proportional-purchases Get Proportional Purchases
+ * @apiName GetUserProportionalPurchases
+ * @apiGroup Users
+ * @apiDescription Get the proportion of user's purchases
+ * @apiParam {String} phoneNumber
+*/
+router.get('/user-proportional-purchases', function(req, res, next) {
+  findUser(req, function(err, user) {
+    if(err)
+      return next(err);
+    cap1.getPurchases(user.accountId, function(err, data) {
+      if(err)
+        return next(err);
+      // Constructing a custom object to send back
+      var retVal = {};
+      var total = 0;
+      for(var i = 0; i < data.length; ++i) {
+        total += data[i].amount;
+        if(retVal.hasOwnProperty(data[i].description)) {
+          var currSoFar = retVal[data[i].description];
+          currSoFar.amount += data[i].amount;
+          retVal[data[i].description] = currSoFar;
+        } else {
+          retVal[data[i].description] = {
+            "amount": data[i].amount,
+            "percentage": 0
+          };
+        }
+      }
+      retVal['total'] = total;
+
+      for(key in retVal) {
+        if(retVal.hasOwnProperty(key)) {
+            retVal[key].percentage = retVal[key].amount / total;
+          }
+        }
+
+      res.json(JSON.parse(retVal));
+
+    });
+  });
+});
+
+
+/**
+ * @api {get} /api/users/company-data Get a Company's Historical Market Data
+ * @apiName GetCompanyData
+ * @apiGroup Users
+ * @apiDescription Gets a company's historical stock data
+ * @apiParam {String} company ticker
+*/
+router.get('/company-data', function(req, res, next) {
+  dailyChart(req, function(err, data) {
+    if(err)
+      return next(err);
+    res.json(JSON.parse(data));
   });
 });
 
